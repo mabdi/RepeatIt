@@ -1,0 +1,76 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        tools:context=".MainActivityFragment">
+
+        <LinearLayout
+            android:id="@+id/row1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <ImageButton
+                android:id="@+id/prev"
+                android:layout_width="@dimen/clickable"
+                android:layout_height="@dimen/clickable"
+                android:src="@mipmap/ic_prev"
+                />
+
+            <TextView
+                android:id="@+id/filename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/spacex1"
+                android:layout_marginRight="@dimen/spacex1"
+                android:layout_gravity="center"
+                />
+
+            <ImageButton
+                android:id="@+id/next"
+                android:layout_width="@dimen/clickable"
+                android:layout_height="@dimen/clickable"
+                android:src="@mipmap/ic_next"
+                />
+        </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/listen"
+                android:layout_marginTop="@dimen/spacex3"
+                android:layout_margin="@dimen/spacex2"
+                android:layout_width="@dimen/toggles"
+                android:layout_height="@dimen/toggles"
+                android:button="@null"
+                android:background="@drawable/play_org_bg"
+                />
+
+            <CheckBox
+                android:id="@+id/record"
+                android:layout_margin="@dimen/spacex2"
+                android:layout_width="@dimen/toggles"
+                android:layout_height="@dimen/toggles"
+                android:button="@null"
+                android:background="@drawable/rec_bg"
+                />
+
+            <CheckBox
+                android:id="@+id/repeat"
+                android:layout_margin="@dimen/spacex2"
+                android:layout_width="@dimen/toggles"
+                android:layout_height="@dimen/toggles"
+                android:button="@null"
+                android:background="@drawable/play_rec_bg"
+                />
+        </LinearLayout>
+
+</ScrollView>

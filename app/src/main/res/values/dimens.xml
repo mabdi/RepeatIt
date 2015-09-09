@@ -1,0 +1,14 @@
+<resources>
+    <integer name="match_par">-1</integer>
+    <integer name="wrap_cont">-2</integer>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="clickable">48dp</dimen>
+    <dimen name="toggles">72dp</dimen>
+    <dimen name="spacex2">8dp</dimen>
+    <dimen name="spacex1">4dp</dimen>
+    <dimen name="spacex0">2dp</dimen>
+    <dimen name="wave_height">100dp</dimen>
+    <dimen name="spacex3">16dp</dimen>
+</resources>
