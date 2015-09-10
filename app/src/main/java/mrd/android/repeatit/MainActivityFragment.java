@@ -31,6 +31,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -52,6 +54,7 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
     private MediaRecorder mRecorder;
     private MediaPlayer mPlayerRepeat;
     private SharedPreferences mSharedPreferences;
+    private File[] mFiles;
 
 
     public MainActivityFragment() {
@@ -83,6 +86,9 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
             folder.mkdir();
         }
         RECORD_FILE = Environment.getExternalStorageDirectory() + "/repeatit/last_recorded.pcm";
+        if(new File(RECORD_FILE).exists()){
+            new File(RECORD_FILE).delete();
+        }
         mSharedPreferences = getActivity().getSharedPreferences(
                 "repeatit.db", Context.MODE_PRIVATE);
         getSelectedFile();
@@ -90,8 +96,11 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
 
     private void openFile() {
         Intent intent = new Intent(getActivity(), FileOpenActivity.class);
-        intent.putExtra(FileOpenActivity.START_PATH, Environment.getExternalStorageDirectory().
+        intent.putExtra(FileOpenActivity.ROOT_PATH, Environment.getExternalStorageDirectory().
                 getParentFile().getAbsolutePath());
+        if(openedFile!=null) {
+            intent.putExtra(FileOpenActivity.START_PATH, new File(openedFile).getParent());
+        }
         intent.putExtra(FileOpenActivity.FORMAT_FILTER, new String[]{"mp3", "m4a"});
         intent.putExtra(FileOpenActivity.ONLY_SELECT_DIR, false);
         intent.putExtra(FileOpenActivity.TITLE, getString(R.string.folder_selector_title));
@@ -117,8 +126,18 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
             openedFile = mSharedPreferences.getString("file",null);
             if(openedFile == null){
                 mFilename.setText("Tap to select file");
+                mFiles = null;
             }else{
                 mFilename.setText(new File(openedFile).getName());
+                File file = new File(openedFile);
+                mFiles = file.getParentFile().listFiles(new FileFilter() {
+                    @Override
+                    public boolean accept(File pathname) {
+                        return pathname.getName().endsWith(".mp3") ||
+                                pathname.getName().endsWith("m4a");
+                    }
+                });
+                Arrays.sort(mFiles);
             }
         }
         return openedFile;
@@ -142,18 +161,15 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
     }
 
     private void loadPrevMusic() {
+        if(mFiles == null){
+            Toast.makeText(getActivity(),"No File.",Toast.LENGTH_LONG).show();
+            return;
+        }
         File file = new File(getSelectedFile());
-        File[] files = file.getParentFile().listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith(".mp3")||
-                        pathname.getName().endsWith("m4a");
-            }
-        });
-        for (int i = 0; i < files.length; i++) {
-            if(files[i].getName().equals(file.getName())){
+        for (int i = 0; i < mFiles.length; i++) {
+            if(mFiles[i].getName().equals(file.getName())){
                 if(i>0){
-                    setSelectedFile(files[i-1].getAbsolutePath());
+                    setSelectedFile(mFiles[i-1].getAbsolutePath());
                 }else{
                     Toast.makeText(getActivity(),"No Prev File",Toast.LENGTH_LONG).show();
                 }
@@ -163,18 +179,15 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
     }
 
     private void loadNextMusic() {
+        if(mFiles == null){
+            Toast.makeText(getActivity(),"No File.",Toast.LENGTH_LONG).show();
+            return;
+        }
         File file = new File(getSelectedFile());
-        File[] files = file.getParentFile().listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith(".mp3")||
-                        pathname.getName().endsWith("m4a");
-            }
-        });
-        for (int i = 0; i < files.length; i++) {
-            if(files[i].getName().equals(file.getName())){
-                if(i < files.length-1){
-                    setSelectedFile(files[i+1].getAbsolutePath());
+        for (int i = 0; i < mFiles.length; i++) {
+            if(mFiles[i].getName().equals(file.getName())){
+                if(i < mFiles.length-1){
+                    setSelectedFile(mFiles[i+1].getAbsolutePath());
                 }else{
                     Toast.makeText(getActivity(),"No Next File",Toast.LENGTH_LONG).show();
                 }
@@ -213,6 +226,10 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
     }
 
     private void doListen() {
+        if(getSelectedFile() == null){
+            Toast.makeText(getActivity(),"No File.",Toast.LENGTH_LONG).show();
+            return;
+        }
         mPlayerListen = new MediaPlayer();
         try {
             mPlayerListen.setDataSource(getSelectedFile());
@@ -261,6 +278,10 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
     }
 
     private void doRepeat() {
+        if(!new File( RECORD_FILE).exists()){
+            Toast.makeText(getActivity(),"No Recorded.",Toast.LENGTH_LONG).show();
+            return;
+        }
         mPlayerRepeat = new MediaPlayer();
         try {
             mPlayerRepeat.setDataSource(RECORD_FILE);
@@ -303,4 +324,5 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
             mPlayerRepeat = null;
         }
     }
+
 }

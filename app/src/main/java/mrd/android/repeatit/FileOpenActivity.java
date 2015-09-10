@@ -21,7 +21,7 @@ public class FileOpenActivity extends ListActivity {
 
     private static final String ITEM_KEY = "key";
     private static final String ITEM_IMAGE = "image";
-    private static final String ROOT = "/";
+    public static final String ROOT_PATH = "ROOT_PATH";
     public static final String START_PATH = "START_PATH";
     public static final String FORMAT_FILTER = "FORMAT_FILTER";
     public static final String RESULT_PATH = "RESULT_PATH";
@@ -30,6 +30,7 @@ public class FileOpenActivity extends ListActivity {
     public static final String ONLY_SELECT_DIR = "ONLY_SELECT_DIR";
     public static final String TITLE = "TITLE";
 
+    private String root = "/";
     private List<String> path = null;
     private TextView myPath;
 
@@ -38,7 +39,7 @@ public class FileOpenActivity extends ListActivity {
     private Button selectButton;
 
     private String parentPath;
-    private String currentPath = ROOT;
+    private String currentPath = root;
 
 
     private String[] formatFilter = null;
@@ -75,7 +76,8 @@ public class FileOpenActivity extends ListActivity {
         if(onlySelectDir)
             canSelectDir = true;
         startPath = getIntent().getStringExtra(START_PATH);
-        startPath = startPath != null ? startPath : ROOT;
+        root = getIntent().getStringExtra(ROOT_PATH);
+        startPath = startPath != null ? startPath : root;
         if (canSelectDir) {
             File file = new File(startPath);
             selectedFile = file;
@@ -103,17 +105,19 @@ public class FileOpenActivity extends ListActivity {
         File f = new File(currentPath);
         File[] files = f.listFiles();
         if (files == null) {
-            currentPath = ROOT;
+            currentPath = root;
             f = new File(currentPath);
             files = f.listFiles();
         }
         myPath.setText(getText(R.string.location) + ": " + currentPath);
 
-        if (!(currentPath.equals(ROOT) || currentPath.equals(startPath))) {
+        if (!(currentPath.equals(root)
+//                || currentPath.equals(startPath)
+                )) {
 
-            //			item.add(ROOT);
-            //			addItem(ROOT, R.drawable.ic_root_folder);
-            //			path.add(ROOT);
+            //			item.add(root);
+            //			addItem(root, R.drawable.ic_root_folder);
+            //			path.add(root);
 
             item.add(getString(R.string.nup));
             addItem(getString(R.string.nup), R.mipmap.ic_folder_up);
