@@ -44,16 +44,41 @@
                 />
         </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/row2"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/spacex3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        >
+            <Button
+                android:id="@+id/back"
+                android:layout_width="@dimen/toggles"
+                android:layout_margin="@dimen/spacex2"
+                android:layout_height="@dimen/toggles"
+                android:button="@null"
+                android:background="@drawable/back"
+                />
+
             <CheckBox
                 android:id="@+id/listen"
-                android:layout_marginTop="@dimen/spacex3"
                 android:layout_margin="@dimen/spacex2"
                 android:layout_width="@dimen/toggles"
                 android:layout_height="@dimen/toggles"
                 android:button="@null"
                 android:background="@drawable/play_org_bg"
                 />
-
+        <Button
+            android:id="@+id/forw"
+            android:layout_width="@dimen/toggles"
+            android:layout_margin="@dimen/spacex2"
+            android:layout_height="@dimen/toggles"
+            android:button="@null"
+            android:background="@drawable/forw"
+            />
+    </LinearLayout>
             <CheckBox
                 android:id="@+id/record"
                 android:layout_margin="@dimen/spacex2"

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -55,7 +56,9 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
     private MediaPlayer mPlayerRepeat;
     private SharedPreferences mSharedPreferences;
     private File[] mFiles;
-
+    private Button mForw;
+    private Button mBack;
+    private int lastpause = 0;
 
     public MainActivityFragment() {
     }
@@ -75,12 +78,16 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
         mListen = (CheckBox)view.findViewById(R.id.listen);
         mRecord = (CheckBox)view.findViewById(R.id.record);
         mRepeat = (CheckBox)view.findViewById(R.id.repeat);
+        mBack = (Button)view.findViewById(R.id.back);
+        mForw = (Button)view.findViewById(R.id.forw);
         mListen.setOnCheckedChangeListener(this);
         mRecord.setOnCheckedChangeListener(this);
         mRepeat.setOnCheckedChangeListener(this);
         mNext.setOnClickListener(this);
         mPrev.setOnClickListener(this);
         mFilename.setOnClickListener(this);
+        mBack.setOnClickListener(this);
+        mForw.setOnClickListener(this);
         File folder = new File(Environment.getExternalStorageDirectory() + "/repeatit");
         if (!folder.exists()) {
             folder.mkdir();
@@ -157,6 +164,35 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
             loadPrevMusic();
         }else if (v.getId() == mFilename.getId()){
             openFile();
+        }else if (v.getId() == mBack.getId()){
+            soundBack();
+        }else if (v.getId() == mForw.getId()){
+            soundForw();
+        }
+    }
+
+    private void soundForw() {
+        if(getSelectedFile() == null){
+            Toast.makeText(getActivity(),"No File.",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(mPlayerListen!= null){
+            // forward 2 seconds
+            mPlayerListen.seekTo(mPlayerListen.getCurrentPosition() + (2 * 1000));
+        }
+    }
+
+    private void soundBack() {
+        if(getSelectedFile() == null){
+            Toast.makeText(getActivity(),"No File.",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(mPlayerListen!= null){
+            // rewind 1 seconds
+            if(mPlayerListen.getCurrentPosition()>1000)
+                mPlayerListen.seekTo(mPlayerListen.getCurrentPosition() - (1 * 1000));
+            else
+                mPlayerListen.seekTo(0);
         }
     }
 
@@ -230,6 +266,7 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
             Toast.makeText(getActivity(),"No File.",Toast.LENGTH_LONG).show();
             return;
         }
+
         mPlayerListen = new MediaPlayer();
         try {
             mPlayerListen.setDataSource(getSelectedFile());
@@ -240,6 +277,7 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
                     mListen.setChecked(false);
                 }
             });
+            mPlayerListen.seekTo(lastpause);
             mPlayerListen.start();
         } catch (IOException e) {
             Log.e("mrd", "prepare() failed");
@@ -248,6 +286,7 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
 
     private void doStopListen(){
         if(mPlayerListen!= null) {
+            lastpause = mPlayerListen.getCurrentPosition();
             mPlayerListen.release();
             mPlayerListen = null;
         }
@@ -306,23 +345,23 @@ public class MainActivityFragment extends Fragment implements CompoundButton.OnC
     }
 
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mRecorder != null) {
-            mRecorder.release();
-            mRecorder = null;
-        }
-
-        if (mPlayerListen != null) {
-            mPlayerListen.release();
-            mPlayerListen = null;
-        }
-
-        if (mPlayerRepeat != null) {
-            mPlayerRepeat.release();
-            mPlayerRepeat = null;
-        }
-    }
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        if (mRecorder != null) {
+//            mRecorder.release();
+//            mRecorder = null;
+//        }
+//
+//        if (mPlayerListen != null) {
+//            mPlayerListen.release();
+//            mPlayerListen = null;
+//        }
+//
+//        if (mPlayerRepeat != null) {
+//            mPlayerRepeat.release();
+//            mPlayerRepeat = null;
+//        }
+//    }
 
 }
